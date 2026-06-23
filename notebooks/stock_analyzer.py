@@ -10,8 +10,12 @@ import yfinance as yf
 # =====================================================================
 def initialize_workspace():
     """Creates local directory safe paths and establishes visual plotting properties."""
-    os.makedirs('../outputs', exist_ok=True)
-    os.makedirs('../data', exist_ok=True)
+    root_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
+    data_dir = os.path.join(root_dir, 'data')
+    outputs_dir = os.path.join(root_dir, 'outputs')
+
+    os.makedirs(outputs_dir, exist_ok=True)
+    os.makedirs(data_dir, exist_ok=True)
     
     # Establish a premium clean corporate layout for financial charts
     sns.set_theme(style="darkgrid")
@@ -19,16 +23,24 @@ def initialize_workspace():
     plt.rcParams['axes.titlesize'] = 14
     plt.rcParams['axes.labelsize'] = 11
     print("🚀 Project workspace initialized. Financial graphing themes activated.")
+    return root_dir, data_dir, outputs_dir
 
 # =====================================================================
 # PHASE 1: TIME SERIES ENGINEERING PIPELINE
 # =====================================================================
-def extract_and_engineer_stock_data(ticker, start_date, end_date):
+def extract_and_engineer_stock_data(ticker, start_date, end_date, data_dir):
     """Streams live market data from Yahoo Finance API and engineers advanced metrics."""
     print(f"⏳ Ingesting market streams for ticker token: '{ticker}' from {start_date} to {end_date}...")
     
-    # Download time series dataset via live API request
-    stock_df = yf.download(ticker, start=start_date, end=end_date)
+    # Create a custom session object with mock browser headers to prevent API rejection blocks
+    import requests
+    session = requests.Session()
+    session.headers.update({
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
+    })
+    
+    # Download time series dataset via live API request using our custom session
+    stock_df = yf.download(ticker, start=start_date, end=end_date, session=session)
     
     if stock_df.empty:
         raise ValueError(f"CRITICAL: No market records returned for ticker '{ticker}'. Check symbol or connectivity.")
@@ -51,7 +63,7 @@ def extract_and_engineer_stock_data(ticker, start_date, end_date):
     stock_df['Bollinger_Lower'] = stock_df['SMA_20'] - (stock_df['Rolling_Std'] * 2)
     
     # Export clean standardized dataset file for downstream visualization or archival use
-    output_csv_path = f"../data/{ticker.lower()}_market_metrics.csv"
+    output_csv_path = os.path.join(data_dir, f"{ticker.lower()}_market_metrics.csv")
     stock_df.to_csv(output_csv_path, index=False)
     print(f"✅ Time series engineering complete. Clean analytics data saved to: {output_csv_path}")
     return stock_df
@@ -59,7 +71,7 @@ def extract_and_engineer_stock_data(ticker, start_date, end_date):
 # =====================================================================
 # PHASE 2: FINANCIAL REPORTING GRAPHICS
 # =====================================================================
-def export_financial_graphics(stock_df, ticker):
+def export_financial_graphics(stock_df, ticker, outputs_dir):
     """Generates high-resolution production charts visualizing stock market vectors."""
     print(f"⏳ Generating high-resolution financial charts for '{ticker}'...")
 
@@ -74,7 +86,7 @@ def export_financial_graphics(stock_df, ticker):
     plt.ylabel('Asset Value (USD)')
     plt.legend(loc='upper left')
     plt.tight_layout()
-    plt.savefig(f"../outputs/{ticker.lower()}_price_trends.png", dpi=300)
+    plt.savefig(os.path.join(outputs_dir, f"{ticker.lower()}_price_trends.png"), dpi=300)
     plt.close()
 
     # --- Chart 2: Bollinger Bands Risk Channels ---
@@ -91,7 +103,7 @@ def export_financial_graphics(stock_df, ticker):
     plt.ylabel('Asset Value (USD)')
     plt.legend(loc='upper left')
     plt.tight_layout()
-    plt.savefig(f"../outputs/{ticker.lower()}_volatility_channels.png", dpi=300)
+    plt.savefig(os.path.join(outputs_dir, f"{ticker.lower()}_volatility_channels.png"), dpi=300)
     plt.close()
 
     # --- Chart 3: Historical Returns Distribution (Risk/Reward Histogram) ---
@@ -105,10 +117,10 @@ def export_financial_graphics(stock_df, ticker):
     plt.ylabel('Frequency Count Density')
     plt.legend()
     plt.tight_layout()
-    plt.savefig(f"../outputs/{ticker.lower()}_returns_distribution.png", dpi=300)
+    plt.savefig(os.path.join(outputs_dir, f"{ticker.lower()}_returns_distribution.png"), dpi=300)
     plt.close()
 
-    print("✅ Financial graphics exported successfully into the 'outputs/' directory.")
+    print(f"✅ Financial graphics exported successfully into: {outputs_dir}")
 
 # =====================================================================
 # SYSTEM EXECUTION INTERACTION CONTROLLER
@@ -119,7 +131,7 @@ if __name__ == "__main__":
     START_TIMELINE = '2024-01-01'
     END_TIMELINE = '2026-06-01' # Up to current data window
     
-    initialize_workspace()
-    processed_stock_data = extract_and_engineer_stock_data(TARGET_ASSET, START_TIMELINE, END_TIMELINE)
-    export_financial_graphics(processed_stock_data, TARGET_ASSET)
+    root_dir, data_dir, outputs_dir = initialize_workspace()
+    processed_stock_data = extract_and_engineer_stock_data(TARGET_ASSET, START_TIMELINE, END_TIMELINE, data_dir)
+    export_financial_graphics(processed_stock_data, TARGET_ASSET, outputs_dir)
     print(f"🎉 Complete market time-series execution for {TARGET_ASSET} completed flawlessly!")
