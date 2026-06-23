@@ -110,3 +110,16 @@ def export_financial_graphics(stock_df, ticker):
 
     print("✅ Financial graphics exported successfully into the 'outputs/' directory.")
 
+# =====================================================================
+# SYSTEM EXECUTION INTERACTION CONTROLLER
+# =====================================================================
+if __name__ == "__main__":
+    # Choose a major technology company asset to analyze (e.g., Apple: 'AAPL')
+    TARGET_ASSET = 'AAPL'
+    START_TIMELINE = '2024-01-01'
+    END_TIMELINE = '2026-06-01' # Up to current data window
+    
+    initialize_workspace()
+    processed_stock_data = extract_and_engineer_stock_data(TARGET_ASSET, START_TIMELINE, END_TIMELINE)
+    export_financial_graphics(processed_stock_data, TARGET_ASSET)
+    print(f"🎉 Complete market time-series execution for {TARGET_ASSET} completed flawlessly!")
