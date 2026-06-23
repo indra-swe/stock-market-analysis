@@ -56,3 +56,57 @@ def extract_and_engineer_stock_data(ticker, start_date, end_date):
     print(f"✅ Time series engineering complete. Clean analytics data saved to: {output_csv_path}")
     return stock_df
 
+# =====================================================================
+# PHASE 2: FINANCIAL REPORTING GRAPHICS
+# =====================================================================
+def export_financial_graphics(stock_df, ticker):
+    """Generates high-resolution production charts visualizing stock market vectors."""
+    print(f"⏳ Generating high-resolution financial charts for '{ticker}'...")
+
+    # --- Chart 1: Historical Closing Price vs Trend Moving Averages ---
+    plt.figure()
+    plt.plot(stock_df['Date'], stock_df['Close'], label='Daily Closing Price', color='#0073e6', linewidth=2)
+    plt.plot(stock_df['Date'], stock_df['SMA_20'], label='20-Day SMA (Short-Term Trend)', color='#ff9900', linestyle='--')
+    plt.plot(stock_df['Date'], stock_df['SMA_50'], label='50-Day SMA (Long-Term Trend)', color='#cc0000', linestyle=':')
+    
+    plt.title(f"Market Valuation Price Action & Rolling Moving Averages ({ticker})", fontweight='bold')
+    plt.xlabel('Timeline Date')
+    plt.ylabel('Asset Value (USD)')
+    plt.legend(loc='upper left')
+    plt.tight_layout()
+    plt.savefig(f"../outputs/{ticker.lower()}_price_trends.png", dpi=300)
+    plt.close()
+
+    # --- Chart 2: Bollinger Bands Risk Channels ---
+    plt.figure()
+    plt.plot(stock_df['Date'], stock_df['Close'], label='Close Price', color='#2b2b2b', linewidth=1.5)
+    plt.plot(stock_df['Date'], stock_df['Bollinger_Upper'], label='Upper Volatility Band', color='#2ca02c', alpha=0.7)
+    plt.plot(stock_df['Date'], stock_df['Bollinger_Lower'], label='Lower Volatility Band', color='#d62728', alpha=0.7)
+    
+    # Fill the channel space between upper and lower bands to represent market variance fields
+    plt.fill_between(stock_df['Date'], stock_df['Bollinger_Lower'], stock_df['Bollinger_Upper'], color='#e1e1e1', alpha=0.4, label='Volatility Range')
+    
+    plt.title(f"Bollinger Bands Volatility Expansion Profile ({ticker})", fontweight='bold')
+    plt.xlabel('Timeline Date')
+    plt.ylabel('Asset Value (USD)')
+    plt.legend(loc='upper left')
+    plt.tight_layout()
+    plt.savefig(f"../outputs/{ticker.lower()}_volatility_channels.png", dpi=300)
+    plt.close()
+
+    # --- Chart 3: Historical Returns Distribution (Risk/Reward Histogram) ---
+    plt.figure()
+    sns.histplot(stock_df['Daily_Return'].dropna(), bins=50, kde=True, color='#6f42c1')
+    plt.axvline(stock_df['Daily_Return'].mean(), color='black', linestyle='--', 
+                label=f"Mean Return: {stock_df['Daily_Return'].mean():.4f}%")
+    
+    plt.title(f"Daily Asset Returns Frequency & Distribution Density ({ticker})", fontweight='bold')
+    plt.xlabel('Percentage Daily Variation Split')
+    plt.ylabel('Frequency Count Density')
+    plt.legend()
+    plt.tight_layout()
+    plt.savefig(f"../outputs/{ticker.lower()}_returns_distribution.png", dpi=300)
+    plt.close()
+
+    print("✅ Financial graphics exported successfully into the 'outputs/' directory.")
+
