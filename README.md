@@ -10,7 +10,24 @@ This repository contains an end-to-end quantitative financial analytics framewor
 * **Distribution Volatility Mapping:** Constructed parametric probability distribution metrics to track systematic day-to-day capital return densities.
 
 ---
-
+⚙️ Quantitative Financial TransformationsRaw transaction logs only capture historical closing data points. This pipeline engineers those values into mathematical market indicators:
+* Simple Moving Average ($\text{SMA}_t$):
+  Calculates the continuous rolling arithmetic mean across specific time bounds ($N$) to smooth erratic noise and isolate trends:
+    $$\text{SMA}_t = \frac{1}{N} \sum_{i=0}^{N-1} \text{Close}_{t-i}$$
+* Daily Return Velocity ($\text{R}_t$): Calculates day-to-day growth rates as a percentage variance metric across a sequential timeline:
+    $$\text{R}_t = \frac{\text{Close}_t - \text{Close}_{t-1}}{\text{Close}_{t-1}}$$
+* Bollinger Band Variance Boundaries: Maps pricing volatility envelopes by placing boundaries exactly $\pm 2$ standard deviations ($\sigma$) away from a 20-day rolling average:
+    $$\text{Bollinger Channels} = \text{SMA}_{20} \pm \left(2 \times \sigma_{20}\right)$$
+📊 Quantitative Strategic Insights
+**1. Dual-SMA Intersection SignalsPlotting the short-term 20-day trend line against the broader 50-day trajectory isolates macro equity momentum shifts. When the 20-day SMA cuts clearly above the 50-day line, it represents a structural bull market breakout window.
+**2. Gaussian Returns SymmetryEvaluating the daily return percentage metrics confirms a tight normal distribution peaked near a positive mean. The tails of this distribution quantify extreme outlier trading sessions, providing a raw dataset for systematic value-at-risk (VaR) profiling.
+  
+🚀 Environment Execution & Setup
+1. Clone & Core InitializationBashgit clone [https://github.com/indra-swe/stock-market-analysis.git](https://github.com/indra-swe/stock-market-analysis.git)
+  cd stock-market-analysis
+  pip install -r requirements.txt
+2. Trigger the Quantitative PipelineTo execute the live extraction API, compute metrics, and regenerate the high-resolution charts in your workspace:Bashpython notebooks/stock_analyzer.py
+---
 ## 🛠 Project Workspace Architecture
 ```text
 ├── data/
@@ -24,7 +41,4 @@ This repository contains an end-to-end quantitative financial analytics framewor
 ├── dashboards/
 │   └── stock_dashboard.pbix          # Premium dark financial BI workspace dashboard
 └── requirements.txt                  # System software dependencies
-⚙️ Quantitative Financial TransformationsRaw transaction logs only capture historical closing data points. This pipeline engineers those values into mathematical market indicators:Simple Moving Average ($\text{SMA}_t$): Calculates the continuous rolling arithmetic mean across specific time bounds ($N$) to smooth erratic noise and isolate trends:$$\text{SMA}_t = \frac{1}{N} \sum_{i=0}^{N-1} \text{Close}_{t-i}$$Daily Return Velocity ($\text{R}_t$): Calculates day-to-day growth rates as a percentage variance metric across a sequential timeline:$$\text{R}_t = \frac{\text{Close}_t - \text{Close}_{t-1}}{\text{Close}_{t-1}}$$Bollinger Band Variance Boundaries: Maps pricing volatility envelopes by placing boundaries exactly $\pm 2$ standard deviations ($\sigma$) away from a 20-day rolling average:$$\text{Bollinger Channels} = \text{SMA}_{20} \pm \left(2 \times \sigma_{20}\right)$$📊 Quantitative Strategic Insights1. Dual-SMA Intersection SignalsPlotting the short-term 20-day trend line against the broader 50-day trajectory isolates macro equity momentum shifts. When the 20-day SMA cuts clearly above the 50-day line, it represents a structural bull market breakout window.2. Gaussian Returns SymmetryEvaluating the daily return percentage metrics confirms a tight normal distribution peaked near a positive mean. The tails of this distribution quantify extreme outlier trading sessions, providing a raw dataset for systematic value-at-risk (VaR) profiling.🚀 Environment Execution & Setup1. Clone & Core InitializationBashgit clone [https://github.com/indra-swe/stock-market-analysis.git](https://github.com/indra-swe/stock-market-analysis.git)
-cd stock-market-analysis
-pip install -r requirements.txt
-2. Trigger the Quantitative PipelineTo execute the live extraction API, compute metrics, and regenerate the high-resolution charts in your workspace:Bashpython notebooks/stock_analyzer.py
+
