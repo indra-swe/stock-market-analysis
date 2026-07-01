@@ -10,6 +10,20 @@ This repository contains an end-to-end quantitative financial analytics framewor
 * **Distribution Volatility Mapping:** Constructed parametric probability distribution metrics to track systematic day-to-day capital return densities.
 
 ---
+## 🛠 Project Workspace Architecture
+```text
+├── data/
+│   └── aapl_market_metrics.csv       # Standardized time-series metrics engine file
+├── notebooks/
+│   └── stock_analyzer.py             # Functionalized engineering & math script
+├── outputs/
+│   ├── aapl_price_trends.png         # Chart: Moving average intersections
+│   ├── aapl_volatility_channels.png  # Chart: Bollinger Band volatility vectors
+│   └── aapl_returns_distribution.png # Chart: Daily return frequency density
+├── dashboards/
+│   └── stock_dashboard.pbix          # Premium dark financial BI workspace dashboard
+└── requirements.txt                  # System software dependencies
+```
 ⚙️ Quantitative Financial TransformationsRaw transaction logs only capture historical closing data points. This pipeline engineers those values into mathematical market indicators:
 * Simple Moving Average ($\text{SMA}_t$):
   Calculates the continuous rolling arithmetic mean across specific time bounds ($N$) to smooth erratic noise and isolate trends:
@@ -28,17 +42,3 @@ This repository contains an end-to-end quantitative financial analytics framewor
   pip install -r requirements.txt
 2. Trigger the Quantitative PipelineTo execute the live extraction API, compute metrics, and regenerate the high-resolution charts in your workspace:Bashpython notebooks/stock_analyzer.py
 ---
-## 🛠 Project Workspace Architecture
-```text
-├── data/
-│   └── aapl_market_metrics.csv       # Standardized time-series metrics engine file
-├── notebooks/
-│   └── stock_analyzer.py             # Functionalized engineering & math script
-├── outputs/
-│   ├── aapl_price_trends.png         # Chart: Moving average intersections
-│   ├── aapl_volatility_channels.png  # Chart: Bollinger Band volatility vectors
-│   └── aapl_returns_distribution.png # Chart: Daily return frequency density
-├── dashboards/
-│   └── stock_dashboard.pbix          # Premium dark financial BI workspace dashboard
-└── requirements.txt                  # System software dependencies
-
